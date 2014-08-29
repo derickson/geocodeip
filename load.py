@@ -51,7 +51,7 @@ def loadGaz():
 		for g in gazCache.find():
 			gazes[str(g[u'_id'])] = g
 	else:
-		with open('GeoLite2-City-CSV_20140805/GeoLite2-City-Blocks.csv', 'rb') as csvfile:
+		with open('GeoLite2-City-Blocks.csv', 'rb') as csvfile:
 			gazreader = csv.reader(csvfile, delimiter=',', quotechar='"')
 			next(gazreader, None) 
 			for row in gazreader:
