@@ -16,6 +16,8 @@ public class App {
 		System.out.println("Hello World!");
 		GeoCodeIp geo = new GeoCodeIp();
 
+		printLoc(geo.getLonLat("12.152.107.1"));
+		printLoc(geo.getLonLat("12.152.107.66"));
 		printLoc(geo.getLonLat("96.241.81.50"));
 
 	}

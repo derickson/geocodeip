@@ -2,6 +2,7 @@ package com.derickson.geocodeip;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -60,12 +61,12 @@ public class GeoCodeIp {
 	}
 	
 	public List<Double> getLonLat(final String ip){
-		System.out.println("Coding: "+ip);
 		String[] ipParts = ip.split("\\.");
 		if(ipParts.length != 4) return zeroZero;
 		
-		Integer gazIndex = new Integer(ipParts[1]);
-		String prefix = String.format("%i_%i_%i",ipParts[0],ipParts[1],ipParts[2]);
+		Integer gazIndex = new Integer(ipParts[0]);
+		int fourth = Integer.parseInt(ipParts[3]);
+		String prefix = ipParts[0]+"_"+ipParts[1]+"_"+ipParts[2];
 		DBObject gaz = gazes.get(gazIndex);
 		
 		if( gaz.containsField(prefix)){
@@ -75,19 +76,28 @@ public class GeoCodeIp {
 			Set<String> keySet = gazEntries.keySet();
 			int keySetSize = keySet.size();
 			
-			if(keySetSize == 0){
+			if(keySetSize == 1){
 				entry = (BasicDBList) gazEntries.get(  keySet.iterator().next() );
+			} else {
+				int[] keySetInt = new int[keySetSize];
+				int i = 0;
+				for(String key : keySet){
+					keySetInt[i] = Integer.parseInt(key);
+					++i;
+				}
+				Arrays.sort(keySetInt);
+				
+				for(i=0; i<keySetSize; ++i){
+					int key = keySetInt[i];
+					if(key <= fourth){
+						entry = (BasicDBList) gazEntries.get( Integer.toString(key) );
+					} else {
+						break;
+					}
+				}
 			}
-			
-			int[] keySetInt = new int[keySetSize];
-			int i = 0;
-			for(String key : keySet){
-				keySetInt[i] = Integer.parseInt(key);
-				++i;
-			}
-			
-			
-			
+
+			return (List<Double>) entry.get(2);
 		}
 		
 		return zeroZero;
